@@ -7,8 +7,7 @@
 	<script>
 		const d = document;
 		const de = d.documentElement;
-		const hasStorage = typeof(Storage) !== "undefined";
-		
+		const hasStorage = typeof(Storage) !== "undefined";	
 
 		function rootSupportClasses() {
 			de.classList.remove("noJS");
@@ -165,7 +164,6 @@
 			[class*="_large-desktop-margin"] {margin-bottom:0}
 		}
 
-
 		@supports (display:grid) {
 			[class*="grid__2"] {display:grid;grid-gap:.75rem}
 
@@ -296,8 +294,7 @@
 	<script>
 		const pausePlayBtn = d.getElementById("pausePlayBtn");
 		const hamburgerBtn = d.getElementById("hamburgerBtn");
-		
-		
+			
 		function toggleMenu(e) {
 			let btn = e.target;
 			btn = btn.closest(".header__hamburger-btn");
@@ -314,11 +311,9 @@
 			}
 		}
 
-
 		if(hamburgerBtn) {
 			hamburgerBtn.addEventListener("click", toggleMenu, false);
 		}
-		
 		
 		function toggleAnimClass(e) {
 			let btn = e.target;
@@ -343,13 +338,11 @@
 			}
 		}
 		
-		
 		function setInitState() {
 			if(de.classList.contains("noAnim")) {
 				pausePlayBtn.setAttribute("aria-title", "play animations");
 			}
 		}
-
 
 		if(pausePlayBtn) {
 			setInitState();
