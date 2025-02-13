@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="noJS noAnim">
+<head>
+	<meta charset="UTF-8">
+	<title>Fedivelo</title>
+	
+	<script>
+		const d = document;
+		const de = d.documentElement;
+		const hasStorage = typeof(Storage) !== "undefined";
+		
+
+		function rootSupportClasses() {
+			de.classList.remove("noJS");
+			de.classList.add("hasJS");
+			
+			if(hasStorage) {
+				const getStoredItem = localStorage.getItem("animState");
+				if(getStoredItem !== "off"){
+					de.classList.remove("noAnim");
+					de.classList.add("useAnim");
+				}
+			}
+		}
+		
+		rootSupportClasses();
+	</script>
+	
+	<link rel="icon" href="favicon.ico">
+	<meta name="description" content="Fedivelo is a website about Front End development such as Front End technologies, methodologies, tools, articles etc.">
+	<meta name="author" content="James Cockburn">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<style>
+		:root {
+			--bg:0, 0%;
+			--bg-default-l:10%;
+			--bg-hsl:hsl(var(--bg), var(--bg-default-l));
+			--fg:100, 100%;
+			--fg-default-l: 32%;
+			--fg-hsl:hsl(var(--fg), var(--fg-default-l));
+			--fg-hover:hsl(var(--fg), 42%);
+			--font:Tahoma, Geneva, sans-serif;
+		}
+		
+		*, *:before, *:after {box-sizing:border-box;padding:0;margin:0}
+		
+		body {background-color:var(--bg-hsl);color:var(--fg-hsl);font-family:var(--font);line-height:1.4;letter-spacing:1px}
+		.useAnim body:after {display:none}
+		
+		@media (min-width:59.5em) {  /*952px*/
+			.useAnim body:after {display:block;content:"";position:fixed;top:0;right:0;bottom:0;left:0;background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MCIgaGVpZ2h0PSI5Ij4KPHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjkiIGZpbGw9IiMzNmEzMDAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjkwIiBoZWlnaHQ9IjgiIGZpbGw9IiMxYTFhMWEiPjwvcmVjdD4KPC9zdmc+");opacity:.15;background-position:0 0;animation:animBg 25s linear infinite;pointer-events:none}
+		}
+		
+		.visually-hidden {position:absolute;overflow:hidden;clip:rect(0 0 0 0);height:1px;width:1px;margin:-1px;padding:0;border:0}
+		
+		section {margin-bottom:2rem}
+		
+		[class*="__heading"],
+		[class*="__title"],
+		p {margin:0;font-weight:normal}
+		[class*="__heading"] {font-size:2rem}
+		[class*="__title"] {font-size:1.75rem;margin-bottom:1rem}
+		
+		.header {max-width:85.375rem;margin:4rem auto 2rem;text-align:center;border-bottom:.25rem solid var(--fg-hsl);padding-bottom:2rem}
+		.header__tagline {margin:0 1.5rem;font-size:1.75rem}
+		
+		.header__pause-play-btn {display:none}
+		
+		@media (min-width:59.5em) {  /*952px*/
+			.header {border:none;text-align:left;padding:0 .75rem}
+			.header__pause-play-btn {display:block;position:absolute;top:1rem;right:1rem;outline:none;border:none;background-color:transparent}
+			.header__pause-play-btn:hover {cursor:pointer}
+			.header__pause-play-btn svg {width:52px;height:52px;display:block;pointer-events:none}
+
+			.header__pause-play-btn[aria-title="pause animations"] .header__pause {display:block}
+			.header__pause-play-btn[aria-title="pause animations"] .header__play {display:none}
+			.header__pause-play-btn[aria-title="play animations"] .header__pause {display:none}
+			.header__pause-play-btn[aria-title="play animations"] .header__play {display:block}
+		}
+		
+		.header__hamburger-btn {position:absolute;top:.75rem;left:.75rem;outline:none;border:none;background-color:transparent;z-index:2}
+		.header__hamburger-btn:hover {cursor:pointer}
+		.header__hamburger-btn svg {width:52px;height:52px;display:block;pointer-events:none}
+		
+		.header__hamburger-btn[aria-title="open menu"] .header__hamburger {display:block}
+		.header__hamburger-btn[aria-title="open menu"] .header__close {display:none}
+		.header__hamburger-btn[aria-title="close menu"] .header__hamburger {display:none}
+		.header__hamburger-btn[aria-title="close menu"] .header__close {display:block}
+		
+		@media (min-width:59.5em) {  /*952px*/
+			.header__hamburger-btn {display:none}
+		}
+		
+		@media (min-width:87.375rem) { /* 1398px */
+			.header {padding:0}
+		}
+	
+		.nav {position:absolute;top:.75rem;right:.75rem;left:.75rem}
+		.nav__list-container {display:block;padding:0;z-index:1;background-color:var(--bg-hsl);max-width:0;max-height:0;overflow:hidden}
+		.nav__list {padding:.75rem;margin:0}
+		.nav__item {list-style:none;display:block;overflow:hidden;text-align:right}
+		.nav__link {display:block;padding:.5rem;text-decoration:none;font-size:1.5rem}
+		.nav__link,
+		.nav__link:active,
+		.nav__link:visited {color:var(--fg-hsl)}
+		 
+		.nav-on {border:.25rem solid var(--fg-hsl);animation:toggleNav 1s steps(6);animation-fill-mode:forwards;}
+		
+		@media (min-width:59.5em) {  /*952px*/
+			.nav {display:block;position:relative;top:auto;right:auto;left:auto;margin-bottom:2rem}
+			.nav__list-container {max-width:85.375rem;max-height:100%;margin:0 auto}
+			.nav__list {padding:0}
+			.nav__item {width:20%;float:left;text-align:center;border-right:.25rem solid var(--bg-hsl)}
+			.nav__item:last-child {border-right:none}
+			.nav__link {display:block;padding:.5rem;text-decoration:none;font-size:1.5rem;background-color:var(--fg-hsl)}
+			.nav__link,
+			.nav__link:active,
+			.nav__link:visited {color:var(--bg-hsl);transition:all 0.3s ease-in-out}
+			.nav__item .nav__link:hover,
+			.nav__item .nav__link:focus {background-color:var(--fg-hover)}
+		}
+		
+		.content {display:block;width:100%;max-width:85.375rem;overflow:hidden;margin:0 auto;padding:0 .75rem}
+		
+		@media (min-width:48rem) { /* 768px */
+			.content {padding:0 1rem}
+		}
+		
+		@media (min-width:87.375rem) { /* 1398px */
+			.content {padding:0}
+		}
+		
+		.intro__img-container {display:none}
+		
+		@media (min-width:39.25em) {  /*628px */
+			.intro__img-container {display:block;overflow:hidden;background-color:green}
+			.intro__img {display:block}
+		}
+		
+		[class*="grid__2"] {display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-flex-flow:row wrap}
+		
+		[class*="grid__item"] {min-width:100%;margin-bottom:.75rem;height:200px;flex-grow:1}
+		
+		@media (min-width:39.25em) {  /*628px */
+			[class*="grid__item"] {min-width: calc(20rem - .75rem * 2);margin-right:.75rem}
+			[class*="grid__item"]:nth-child(even) {margin-right:0}
+			[class*="_tablet-margin"] {margin-bottom:0}
+		}
+
+		@media (min-width:48em) {  /*768px*/
+			[class*="grid__item"] {margin-right:1rem;margin-bottom:1rem}
+			[class*="_tablet-margin"] {margin-bottom:0}
+		}
+
+		@media (min-width:59.5em) {  /*952px*/
+			[class*="grid__item"]:nth-child(even) {margin-right:1rem}
+			.grid__2-3 [class^="grid__item"]:nth-child(3n+0) {margin-right:0}
+			[class*="_desktop-margin"] {margin-bottom:0}
+		}
+
+		@media (min-width:79em) {  /*1264px*/
+			.grid__2-3-4 [class*="grid__item"] {min-width:18rem}
+			.grid__2-3-4 [class*="grid__item"]:nth-child(4n+0) {margin-right:0}
+			[class*="_large-desktop-margin"] {margin-bottom:0}
+		}
+
+
+		@supports (display:grid) {
+			[class*="grid__2"] {display:grid;grid-gap:.75rem}
+
+			@media (min-width:39.25em) {  /*628px*/
+				[class*="grid__2"] {grid-template-columns:1fr 1fr}
+			}
+
+			@media (min-width:48em) {  /*768px*/
+				[class*="grid__2"] {grid-gap:1rem}
+			}
+
+			@media (min-width:59.5em) {  /*952px*/
+				[class*="grid__3"],
+				[class*="grid__2-3"] {grid-template-columns:1fr 1fr 1fr}
+			}
+
+			@media (min-width:79em) {  /*1264px*/
+				[class*="grid__2-4"],
+				[class*="grid__2-3-4"] {grid-template-columns:1fr 1fr 1fr 1fr}
+			}
+
+			[class*="grid__item"] {min-width:calc(20rem - .75rem * 2);margin:0;height:200px}
+			
+			[class*="grid__item"]:nth-child(even),
+			[class*="grid__item"]:nth-child(4n+0) {margin:0}
+			
+			[class^="latest-grid__item"] {border:.25rem solid var(--fg-hsl)}
+
+			@media (min-width:48em) {  /*768px*/
+				[class*="grid__item"] {min-width:calc(20rem - 1rem * 2)}
+			}
+		}
+		
+		.intro-grid__item {height:auto}
+		
+		.latest__txt {display:block;padding:1rem}
+		
+		@keyframes animBg {
+			from {background-position:0 0}
+			to {background-position:0 100%}
+		}
+		
+		@keyframes toggleNav {
+			0% {max-width:959px}
+			100% {max-width:959px;max-height:300px}
+		}
+	</style>
+</head>
+<body>
+	
+	<svg class="visually-hidden">
+		<defs>
+			<symbol id="pause" stroke="#36A321" stroke-width="4" fill="none" fill-rule="evenodd">
+				<path d="M2 2h48v48H2z"/>
+				<path d="M18 14v24m16-24v24M18 14v24m16-24v24" stroke-linecap="square"/>
+			</symbol>
+			
+			<symbol id="play" fill="none" fill-rule="evenodd">
+				<path stroke="#36A321" stroke-width="4" d="M2 2h48v48H2z"/>
+				<path fill="#36A321" d="M38 26L17 39V13z"/>
+			</symbol>
+			
+			<symbol id="hamburger" stroke="#36A321" stroke-width="4" fill="none" fill-rule="evenodd">
+				<path d="M2 2h48v48H2z"/>
+				<path d="M15 14h22M15 27h22M15 39h22" stroke-linecap="square"/>
+			</symbol>
+			
+			<symbol id="close" stroke="#36A321" stroke-width="4" fill="none" fill-rule="evenodd">
+				<path d="M2 2h48v48H2z"/>
+				<path d="M14 13l24 26m0-26L14 39" stroke-linecap="square"/>
+			</symbol>
+		</defs>
+	</svg>
+	
+	<header class=header>
+		<h1 class=header__heading>&lt;Fedivelo /&gt;</h1>
+		<p class=header__tagline>Front End "Div"elopment</p>
+		<button id=hamburgerBtn class=header__hamburger-btn aria-title="open menu"><svg focusable=false><use xlink:href="#hamburger" class=header__hamburger></use><use xlink:href="#close" class=header__close></use></svg></button>
+		<button id=pausePlayBtn class=header__pause-play-btn aria-title="pause animations"><svg focusable=false><use xlink:href="#pause" class=header__pause></use><use xlink:href="#play" class=header__play></use></svg></button>
+	</header>
+	
+	<nav class="nav">
+		<div id=navListContainer class=nav__list-container>
+			<ul class=nav__list>
+				<li class=nav__item><a href="" class=nav__link>Home</a></li>
+				<li class=nav__item><a href="" class=nav__link>Articles</a></li>
+				<li class=nav__item><a href="" class=nav__link>Methodologies</a></li>
+				<li class=nav__item><a href="" class=nav__link>Tools</a></li>
+				<li class=nav__item><a href="" class=nav__link>Playground</a></li>
+			</ul>
+		</div>
+	</nav>
+	
+	<div class=content>
+		
+		<section class=intro>
+			<div class=intro-grid__parent>
+				<div class=intro-grid__2>
+					<div class=intro-grid__item>
+						<h2 class=intro__title>Welcome to Fedivelo</h2>
+						<p class=intro__sub>This site covers a variety of topics based around Front End Development, from methodologies and tools, to my personal playground where I upload code that I have been playing around with throughout the years and yes, this site was designed by a developer.</p>
+					</div>
+					<div class="intro-grid__item intro__img-container">
+						<img class=intro__img src=http://via.placeholder.com/296x296 alt="">
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section class=latest>
+			<div class=latest__heading>
+				<h2 class=latest__title>Latest</h2>
+			</div>
+			<div class=latest-grid__parent>
+				<div class=latest-grid__2-3>
+					<div class=latest-grid__item><article class=latest__txt>1</article></div>
+					<div class=latest-grid__item><article class=latest__txt>2</article></div>
+					<div class=latest-grid__item><article class=latest__txt>3</article></div>
+					<div class=latest-grid__item_desktop-margin><article class=latest__txt>4</article></div>
+					<div class=latest-grid__item_tablet-margin><article class=latest__txt>5</article></div>
+					<div class=latest-grid__item_tablet-margin><article class=latest__txt>6</article></div>
+				</div>
+			</div>
+		</section>
+		
+	</div>
+	
+	<script>
+		const pausePlayBtn = d.getElementById("pausePlayBtn");
+		const hamburgerBtn = d.getElementById("hamburgerBtn");
+		
+		
+		function toggleMenu(e) {
+			let btn = e.target;
+			btn = btn.closest(".header__hamburger-btn");
+			const ariaTitle = (btn.getAttribute("aria-title") === "open menu");
+			const nav = d.getElementById("navListContainer");
+			
+			if((btn.getAttribute("aria-title") === "open menu")) {
+				btn.setAttribute("aria-title", "close menu");
+				nav.classList.add("nav-on");
+			}
+			else {
+				btn.setAttribute("aria-title", "open menu");
+				nav.classList.remove("nav-on");
+			}
+		}
+
+
+		if(hamburgerBtn) {
+			hamburgerBtn.addEventListener("click", toggleMenu, false);
+		}
+		
+		
+		function toggleAnimClass(e) {
+			let btn = e.target;
+			btn = btn.closest(".header__pause-play-btn");
+			const ariaTitle = (btn.getAttribute("aria-title") === "pause animations");
+			
+			if(de.classList.contains("noAnim")) {
+				de.classList.remove("noAnim");
+				de.classList.add("useAnim");
+				btn.setAttribute("aria-title", "pause animations");
+				if (hasStorage) {
+					localStorage.removeItem("animState");
+				}
+			}
+			else {
+				de.classList.remove("useAnim");
+				de.classList.add("noAnim");
+				btn.setAttribute("aria-title", "play animations");
+				if (hasStorage) {
+					localStorage.setItem("animState", "off");
+				}
+			}
+		}
+		
+		
+		function setInitState() {
+			if(de.classList.contains("noAnim")) {
+				pausePlayBtn.setAttribute("aria-title", "play animations");
+			}
+		}
+
+
+		if(pausePlayBtn) {
+			setInitState();
+			pausePlayBtn.addEventListener("click", toggleAnimClass, false);
+		}
+	</script>
+
+</body>
+</html>
